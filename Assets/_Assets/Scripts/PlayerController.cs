@@ -4,6 +4,7 @@ public class PlayerController : MonoBehaviour
 {
     private float moveSpeed = 7.0f;
     private float rotateSpeed = 10f;
+    private bool isWalking;
     void Start()
     {
 
@@ -28,8 +29,16 @@ public class PlayerController : MonoBehaviour
             inputVector.x = +1;
         }
         inputVector = inputVector.normalized;
+
         Vector3 moveDirection = new Vector3(inputVector.x, 0, inputVector.y);
         transform.position += moveDirection * moveSpeed * Time.deltaTime;
+        isWalking = moveDirection != Vector3.zero;
+
         transform.forward = Vector3.Slerp(transform.forward, moveDirection, Time.deltaTime * rotateSpeed);
+    }
+
+    public bool IsWalking()
+    {
+        return isWalking;
     }
 }
