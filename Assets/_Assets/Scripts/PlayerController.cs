@@ -1,16 +1,42 @@
-using UnityEditor.Timeline.Actions;
+using System;
 using UnityEngine;
-using UnityEngine.Scripting.APIUpdating;
-
 public class PlayerController : MonoBehaviour
 {
-    [SerializeField] GameInput gameInput;
+    public event EventHandler<OnSelectedCounterChangedEventArgs> OnSelectedCounterChanged;
+    public class OnSelectedCounterChangedEventArgs : EventArgs { public ClearCounter selectedCounter; }
+    [SerializeField] private GameInput gameInput;
+    [SerializeField] private LayerMask countersLayerMask;
+    private Vector3 lastInteractDirection;
+    private ClearCounter selectedCounter;
     private float moveSpeed = 7.0f;
     private float rotateSpeed = 10f;
     private float playerRadius = 0.75f;
     private float playerHeight = 2.0f;
+    private float interactDistance = 2.0f;
     private bool isWalking;
+    void Start()
+    {
+        gameInput.OnInteractAction += GameInput_OnInteractAction;
+    }
+    void GameInput_OnInteractAction(object sender, System.EventArgs e)
+    {
+        if (selectedCounter != null)
+        {
+            selectedCounter.Interact();
+        }
+    }
     void Update()
+    {
+        HandleMovement();
+        HandleInteractions();
+    }
+
+    public bool IsWalking()
+    {
+        return isWalking;
+    }
+
+    void HandleMovement()
     {
         Vector2 inputVector = gameInput.GetMovementVectorNormalized();
         Vector3 moveDirection = new Vector3(inputVector.x, 0, inputVector.y);
@@ -58,8 +84,28 @@ public class PlayerController : MonoBehaviour
         transform.forward = Vector3.Slerp(transform.forward, moveDirection, Time.deltaTime * rotateSpeed);
     }
 
-    public bool IsWalking()
+    void HandleInteractions()
     {
-        return isWalking;
+        Vector2 inputVector = gameInput.GetMovementVectorNormalized();
+        Vector3 moveDirection = new Vector3(inputVector.x, 0, inputVector.y);
+        if (moveDirection != Vector3.zero) { lastInteractDirection = moveDirection; }
+        if (Physics.Raycast(transform.position, lastInteractDirection, out RaycastHit raycastHit, interactDistance, countersLayerMask))
+        {
+            if (raycastHit.transform.TryGetComponent(out ClearCounter clearCounter))
+            {
+                if (clearCounter != selectedCounter) { SetSelectedCounter(clearCounter); }
+                else { SetSelectedCounter(null); }
+            }
+        }
+        else { SetSelectedCounter(null); }
+    }
+
+    void SetSelectedCounter(ClearCounter selectedCounter)
+    {
+        this.selectedCounter = selectedCounter;
+        OnSelectedCounterChanged?.Invoke(this, new OnSelectedCounterChangedEventArgs
+        {
+            selectedCounter = selectedCounter
+        });
     }
 }
