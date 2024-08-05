@@ -1,7 +1,9 @@
 using System;
+using Unity.VisualScripting;
 using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
+    public static PlayerController Instance { get; private set; }
     public event EventHandler<OnSelectedCounterChangedEventArgs> OnSelectedCounterChanged;
     public class OnSelectedCounterChangedEventArgs : EventArgs { public ClearCounter selectedCounter; }
     [SerializeField] private GameInput gameInput;
@@ -14,6 +16,15 @@ public class PlayerController : MonoBehaviour
     private float playerHeight = 2.0f;
     private float interactDistance = 2.0f;
     private bool isWalking;
+    void Awake()
+    {
+        if (Instance != null)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        Instance = this;
+    }
     void Start()
     {
         gameInput.OnInteractAction += GameInput_OnInteractAction;
