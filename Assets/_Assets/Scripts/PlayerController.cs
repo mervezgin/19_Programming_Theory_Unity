@@ -1,26 +1,25 @@
 using System;
-using Unity.VisualScripting;
 using UnityEngine;
 public class PlayerController : MonoBehaviour, IKitchenObjectParent
 {
     public static PlayerController Instance { get; private set; }
 
     public event EventHandler<OnSelectedCounterChangedEventArgs> OnSelectedCounterChanged;
-    public class OnSelectedCounterChangedEventArgs : EventArgs { public ClearCounter selectedCounter; }
+    public class OnSelectedCounterChangedEventArgs : EventArgs { public BaseCounter selectedCounter; }
 
     [SerializeField] private GameInput gameInput;
     [SerializeField] private LayerMask countersLayerMask;
     [SerializeField] private Transform kitchenObjectHoldPoint;
 
     private Vector3 lastInteractDirection;
-    private ClearCounter selectedCounter;
+    private BaseCounter selectedCounter;
     private KitchenObject kitchenObject;
 
     private float moveSpeed = 7.0f;
     private float rotateSpeed = 10f;
-    private float playerRadius = 0.75f;
+    private float playerRadius = 0.8f;
     private float playerHeight = 2.0f;
-    private float interactDistance = 2.0f;
+    private float interactDistance = 2.2f;
     private bool isWalking;
     void Awake()
     {
@@ -108,16 +107,16 @@ public class PlayerController : MonoBehaviour, IKitchenObjectParent
         if (moveDirection != Vector3.zero) { lastInteractDirection = moveDirection; }
         if (Physics.Raycast(transform.position, lastInteractDirection, out RaycastHit raycastHit, interactDistance, countersLayerMask))
         {
-            if (raycastHit.transform.TryGetComponent(out ClearCounter clearCounter))
+            if (raycastHit.transform.TryGetComponent(out BaseCounter baseCounter))
             {
-                if (clearCounter != selectedCounter) { SetSelectedCounter(clearCounter); }
+                if (baseCounter != selectedCounter) { SetSelectedCounter(baseCounter); }
                 else { SetSelectedCounter(null); }
             }
         }
         else { SetSelectedCounter(null); }
     }
 
-    void SetSelectedCounter(ClearCounter selectedCounter)
+    void SetSelectedCounter(BaseCounter selectedCounter)
     {
         this.selectedCounter = selectedCounter;
         OnSelectedCounterChanged?.Invoke(this, new OnSelectedCounterChangedEventArgs
