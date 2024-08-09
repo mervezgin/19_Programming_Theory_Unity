@@ -17,9 +17,9 @@ public class PlayerController : MonoBehaviour, IKitchenObjectParent
 
     private float moveSpeed = 7.0f;
     private float rotateSpeed = 10f;
-    private float playerRadius = 0.8f;
+    private float playerRadius = 0.7f;
     private float playerHeight = 2.0f;
-    private float interactDistance = 2.2f;
+    private float interactDistance = 2.0f;
     private bool isWalking;
     void Awake()
     {
@@ -66,7 +66,7 @@ public class PlayerController : MonoBehaviour, IKitchenObjectParent
 
             //Attempt only X movement
             Vector3 moveDirectionX = new Vector3(moveDirection.x, 0, 0).normalized;
-            canMove = !Physics.CapsuleCast(transform.position, transform.position + Vector3.up * playerHeight, playerRadius, moveDirectionX, moveDistance);
+            canMove = moveDirection.x != 0 && !Physics.CapsuleCast(transform.position, transform.position + Vector3.up * playerHeight, playerRadius, moveDirectionX, moveDistance);
             if (canMove)
             {
                 //can move only on the X 
@@ -78,7 +78,7 @@ public class PlayerController : MonoBehaviour, IKitchenObjectParent
 
                 //Attempt only Z movement 
                 Vector3 moveDirectionZ = new Vector3(0, 0, moveDirection.z).normalized;
-                canMove = !Physics.CapsuleCast(transform.position, transform.position + Vector3.up * playerHeight, playerRadius, moveDirectionZ, moveDistance);
+                canMove = moveDirection.z != 0 && !Physics.CapsuleCast(transform.position, transform.position + Vector3.up * playerHeight, playerRadius, moveDirectionZ, moveDistance);
 
                 if (canMove)
                 {

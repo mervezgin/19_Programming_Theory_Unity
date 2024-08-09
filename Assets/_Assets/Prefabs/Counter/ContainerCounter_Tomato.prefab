@@ -50,7 +50,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7073488466086026438, guid: b800f0169b0ed4f30be2966f2a64bccc, type: 3}
       propertyPath: m_Name
-      value: ContainerCounter
+      value: ContainerCounter_Tomato
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
