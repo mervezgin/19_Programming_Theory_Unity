@@ -1,16 +1,20 @@
 using System;
 using System.Collections.Generic;
-using System.Security.Cryptography.X509Certificates;
-using Unity.VisualScripting;
 using UnityEngine;
 public class DeliveryManager : MonoBehaviour
 {
     public event EventHandler OnRecipeSpawned;
     public event EventHandler OnRecipeCompleted;
+    public event EventHandler OnRecipeSuccessed;
+    public event EventHandler OnRecipeFailed;
+
     public static DeliveryManager Instance { get; private set; }
+
     [SerializeField] private RecipeListSO recipeListSO;
+
     private List<RecipeSO> waitingRecipeSOList;
     public List<RecipeSO> GetWaitingRecipeSOList() { return waitingRecipeSOList; }
+
     private float spawnRecipeTimer;
     private float spawnRecipeTimerMax = 4.0f;
     private int waitingRecipesMax = 4;
@@ -61,11 +65,13 @@ public class DeliveryManager : MonoBehaviour
                 {//player delivered the correct recipe 
                     waitingRecipeSOList.RemoveAt(i);
                     OnRecipeCompleted?.Invoke(this, EventArgs.Empty);
+                    OnRecipeSuccessed?.Invoke(this, EventArgs.Empty);
                     return;
                 }
             }
         }
         //no matches found 
         //player did not deliver correct recipe 
+        OnRecipeFailed?.Invoke(this, EventArgs.Empty);
     }
 }
