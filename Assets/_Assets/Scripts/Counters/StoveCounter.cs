@@ -83,7 +83,6 @@ public class StoveCounter : BaseCounter, IHasProgress
             }
         }
     }
-
     public override void Interact(PlayerController player)
     {
         if (!HasKitchenObject())
@@ -187,5 +186,9 @@ public class StoveCounter : BaseCounter, IHasProgress
             return fryingRecipeSO.output;
         }
         else { return null; }
+    }
+    public bool IsFried()
+    {
+        return state == State.Fried;
     }
 }
