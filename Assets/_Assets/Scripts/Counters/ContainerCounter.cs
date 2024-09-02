@@ -1,5 +1,4 @@
 using System;
-using UnityEngine;
 public class ContainerCounter : BaseCounter
 {
     public event EventHandler OnPlayerGrabbedObject;

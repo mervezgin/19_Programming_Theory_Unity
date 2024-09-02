@@ -1,7 +1,5 @@
 using System;
 using UnityEngine;
-using UnityEngine.EventSystems;
-using UnityEngine.InputSystem.iOS;
 
 public class KitchenGameManager : MonoBehaviour
 {
@@ -19,7 +17,7 @@ public class KitchenGameManager : MonoBehaviour
     private State state;
     private float countdownToStartTimer = 3f;
     private float gamePlayingTimer;
-    private float gamePlayingTimerMax = 50f;
+    private float gamePlayingTimerMax = 80f;
     private bool isGamePaused = false;
     private void Awake()
     {
